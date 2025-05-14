@@ -18,7 +18,6 @@ class SeedController(private val seedService: SeedService) {
     @GetMapping
     fun getSeed(): SeedDto {
         return seedService.generateSeed()
-
     }
 
     @GetMapping("/validate/{seed}")
