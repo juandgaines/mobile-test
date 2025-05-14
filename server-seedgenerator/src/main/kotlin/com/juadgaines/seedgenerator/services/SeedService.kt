@@ -22,4 +22,8 @@ class SeedService {
         return generatedSeedByServer != null && ZonedDateTime.now().isBefore(generatedSeedByServer)
     }
 
+    fun clearSeeds(){
+        seedStorage.clear()
+    }
+
 }
