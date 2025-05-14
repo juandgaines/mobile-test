@@ -1,1 +1,0 @@
-web: java -Dserver.port=$PORT -jar server-seedgenerator/build/libs/seedgenerator-0.0.1-SNAPSHOT.jar
