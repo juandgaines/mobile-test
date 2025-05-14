@@ -31,7 +31,7 @@ class SeedController(private val seedService: SeedService) {
         }
     }
 
-    @PutMapping("clear")
+    @GetMapping("/clear")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun clearSeeds(){
         return seedService.clearSeeds()
