@@ -9,7 +9,7 @@ plugins {
 group = "com.juadgaines"
 version = "0.0.1-SNAPSHOT"
 application {
-	mainClass.set("com.juadgaines.SeedGeneratorApplicationKt")
+	mainClass.set("com.juadgaines.seedgenerator.SeedgeneratorApplicationKt")
 }
 
 java {
