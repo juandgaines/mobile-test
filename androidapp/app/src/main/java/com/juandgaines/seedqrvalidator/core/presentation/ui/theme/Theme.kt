@@ -1,4 +1,4 @@
-package com.juandgaines.seedqrvalidator.ui.theme
+package com.juandgaines.seedqrvalidator.core.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

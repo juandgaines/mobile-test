@@ -14,8 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.juandgaines.seedqrvalidator.core.presentation.navigation.Destinations
 import com.juandgaines.seedqrvalidator.core.presentation.utils.toBitmap
-import com.juandgaines.seedqrvalidator.ui.theme.SeedQRValidatorTheme
+import com.juandgaines.seedqrvalidator.core.presentation.ui.theme.SeedQRValidatorTheme
+import com.juandgaines.seedqrvalidator.home.presentation.HomeScreenRoot
+import com.juandgaines.seedqrvalidator.reader.presentation.ReaderScreenRoot
+import com.juandgaines.seedqrvalidator.scanner.presentation.ScannerScreenRoot
 import qrcode.QRCode
 import qrcode.color.Colors
 
@@ -25,11 +32,27 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SeedQRValidatorTheme {
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = Destinations.HomeNav,
+                        modifier = Modifier.padding(innerPadding),
+                    ){
+                        composable<Destinations.HomeNav> {
+                            HomeScreenRoot()
+                        }
+
+                        composable<Destinations.ScannerNav> {
+                            ScannerScreenRoot()
+                        }
+
+                        composable<Destinations.ReaderNav> {
+                            ReaderScreenRoot()
+                        }
+
+                    }
                 }
             }
         }
