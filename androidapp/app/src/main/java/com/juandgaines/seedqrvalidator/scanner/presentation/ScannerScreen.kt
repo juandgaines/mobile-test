@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.juandgaines.seedqrvalidator.scanner.presentation
 
 import android.Manifest
@@ -6,9 +8,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.juandgaines.seedqrvalidator.core.presentation.navigation.Destinations
@@ -19,9 +29,9 @@ import com.juandgaines.seedqrvalidator.core.presentation.utils.shouldShowCameraP
 fun ScannerScreenRoot(
     scannerScannerViewModel: ScannerViewModel,
     navigateToDestination: (Destinations) -> Unit,
-    navigateUp: () -> Unit,
+    navigateBack: () -> Unit,
 ) {
-    // Scanner screen implementation
+
 
     val scannerState by scannerScannerViewModel.scannerState.collectAsStateWithLifecycle()
 
@@ -64,6 +74,35 @@ fun ScannerScreen(
 
         if (!showCameraRationale) {
             permissionLauncherCamera.requestCameraScreenPermissions(context)
+        }
+    }
+
+    Scaffold (
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Home")
+                }
+            )
+        },
+    ){ paddingValues ->
+        Box(
+            modifier = Modifier.fillMaxSize().padding(paddingValues)
+        ) {
+            PermissionRationaleDialogs(
+                showCameraRationale = state.showCameraRationale,
+                onAccept = {
+                    permissionLauncherCamera.requestCameraScreenPermissions(context)
+                },
+                onDismiss = {
+                    onEvent(
+                        ScannerIntent.SubmitCameraPermissionInfo(
+                            acceptedCameraPermission = activity.hasCameraPermission(),
+                            showCameraRationale = false
+                        )
+                    )
+                }
+            )
         }
     }
 }
