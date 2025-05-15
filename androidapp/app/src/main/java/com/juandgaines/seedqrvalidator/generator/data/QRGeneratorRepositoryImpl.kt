@@ -1,6 +1,8 @@
 package com.juandgaines.seedqrvalidator.generator.data
 
+import android.database.sqlite.SQLiteException
 import com.juandgaines.seedqrvalidator.core.data.database.SeedDao
+import com.juandgaines.seedqrvalidator.core.data.database.toSeed
 import com.juandgaines.seedqrvalidator.core.data.database.toSeedEntity
 import com.juandgaines.seedqrvalidator.core.data.network.SeedApi
 import com.juandgaines.seedqrvalidator.core.data.network.SeedDto
@@ -18,11 +20,21 @@ class QRGeneratorRepositoryImpl @Inject constructor(
     private val seedApi: SeedApi,
     private val seedDao: SeedDao
 ) : QrGeneratorRepository {
-    override suspend fun getSeed(): Result<Seed, DataError.Network> = safeCall<SeedDto> {
-        seedApi.getSeed()
-    }.map { seedDto->
-        seedDto.toSeed()
-    }.onSuccess { seed->
-        seedDao.upsertSeed(seed.toSeedEntity())
+    override suspend fun getSeed(seed:String?): Result<Seed, DataError> {
+        val response = seed?.let {
+            return try {
+                val localSeed= seedDao.getSeedById(it)?.toSeed()!!
+                Result.Success(localSeed)
+            }catch (e:SQLiteException){
+                Result.Error(DataError.LocalError.UNKNOWN)
+            }
+        } ?: safeCall<SeedDto> {
+            seedApi.getSeed()
+        }.map { seedDto->
+            seedDto.toSeed()
+        }.onSuccess { seed->
+            seedDao.upsertSeed(seed.toSeedEntity())
+        }
+        return response
     }
 }

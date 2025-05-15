@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -25,31 +26,35 @@ class HomeViewModel @Inject constructor(
     val eventsHome = _eventChannel.receiveAsFlow()
 
     private val _homeState = MutableStateFlow(HomeState())
-    val homeState:StateFlow<HomeState> = homeRepository.getScannedSeeds()
-        .map { listSeeds->
+    val homeState:StateFlow<HomeState> = homeRepository
+        .getScannedSeeds()
+        .onStart {
+
+        }.map { listSeeds->
             _homeState.update {
                 it.copy(
                     seedList = listSeeds
                 )
             }
             _homeState.value
-        }
-        .combine(_homeState){ previousHS, homeState ->
+        }.combine(_homeState){ previousHS, homeState ->
             homeState.copy(
                 seedList = previousHS.seedList
             )
-        }
-        .stateIn(
+        }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = HomeState()
-    )
+        )
 
     fun onIntent(intent: HomeIntent){
         viewModelScope.launch {
             when(intent){
                 HomeIntent.GenerateQrIntent -> {
-                    _eventChannel.trySend(HomeEvent.NavigateToQr)
+                    _eventChannel.trySend(HomeEvent.NavigateToQr(null))
+                }
+                is HomeIntent.OpenExistingQrIntent -> {
+                    _eventChannel.trySend(HomeEvent.NavigateToQr(seed = intent.seed))
                 }
                 HomeIntent.ScanQrIntent -> {
                     _eventChannel.trySend(HomeEvent.NavigateToScan)
@@ -69,6 +74,8 @@ class HomeViewModel @Inject constructor(
                         )
                     }
                 }
+
+
             }
         }
 

@@ -1,11 +1,14 @@
 package com.juandgaines.seedqrvalidator.generator.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.juandgaines.seedqrvalidator.R
 import com.juandgaines.seedqrvalidator.core.domain.utils.DataError
 import com.juandgaines.seedqrvalidator.core.domain.utils.onError
 import com.juandgaines.seedqrvalidator.core.domain.utils.onSuccess
+import com.juandgaines.seedqrvalidator.core.presentation.navigation.Destinations
 import com.juandgaines.seedqrvalidator.generator.domain.QrGeneratorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -27,9 +30,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QRGeneratorViewModel @Inject constructor(
-    private val qrGeneratorRepositoryModule: QrGeneratorRepository
+    private val qrGeneratorRepositoryModule: QrGeneratorRepository,
+    savedStateHandle: SavedStateHandle
 ):ViewModel(){
 
+    private val seed =  savedStateHandle.toRoute<Destinations.GeneratorQRNav>()
     private val _eventChannel = Channel<GeneratorEvent>()
     val eventsGenerator = _eventChannel.receiveAsFlow()
 
@@ -95,7 +100,7 @@ class QRGeneratorViewModel @Inject constructor(
     }
 
     private suspend fun fetchQrSeed() {
-        qrGeneratorRepositoryModule.getSeed()
+        qrGeneratorRepositoryModule.getSeed(seed.seed)
             .onSuccess { seed->
                 _generatorState.update {
                     it.copy(
@@ -123,6 +128,7 @@ class QRGeneratorViewModel @Inject constructor(
                     )
                 }
             }
+
     }
 
     fun onAction(intent:GeneratorIntent){

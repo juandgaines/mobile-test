@@ -1,7 +1,11 @@
 package com.juandgaines.seedqrvalidator.home.presentation
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.juandgaines.seedqrvalidator.core.presentation.navigation.Destinations
 
@@ -38,7 +43,7 @@ fun HomeScreenRoot(
                     navigateToDestination(Destinations.ScannerNav)
                 }
                 is HomeEvent.NavigateToQr -> {
-                    navigateToDestination(Destinations.GeneratorQRNav)
+                    navigateToDestination(Destinations.GeneratorQRNav(event.seed))
                 }
             }
         }
@@ -59,7 +64,9 @@ fun HomeScreen(
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            Column {
+            Column (
+                verticalArrangement = Arrangement.SpaceBetween
+            ){
 
                 if (state.isMenuVisible){
                     FloatingActionButton(
@@ -109,19 +116,35 @@ fun HomeScreen(
         LazyColumn (
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ){
             items(
                 items = state.seedList,
                 key = { it.seed }
             ){
-                Text(
-                    text = it.seed,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            onIntent(HomeIntent.OpenExistingQrIntent(it.seed))
+                        }
+                ) {
+                    Text(
+                        text = it.seed,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                    Text(
+                        text = it.type.name,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                }
+
             }
 
         }
