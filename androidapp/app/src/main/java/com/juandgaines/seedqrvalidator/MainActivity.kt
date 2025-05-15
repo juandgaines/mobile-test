@@ -24,9 +24,11 @@ import com.juandgaines.seedqrvalidator.home.presentation.HomeScreenRoot
 import com.juandgaines.seedqrvalidator.home.presentation.HomeViewModel
 import com.juandgaines.seedqrvalidator.reader.presentation.ReaderScreenRoot
 import com.juandgaines.seedqrvalidator.scanner.presentation.ScannerScreenRoot
+import dagger.hilt.android.AndroidEntryPoint
 import qrcode.QRCode
 import qrcode.color.Colors
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
