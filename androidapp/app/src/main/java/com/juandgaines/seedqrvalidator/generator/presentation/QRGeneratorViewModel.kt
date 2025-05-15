@@ -13,6 +13,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -32,10 +35,11 @@ class QRGeneratorViewModel @Inject constructor(
     val eventsGenerator = _eventChannel.receiveAsFlow()
 
     private val _refresh = MutableStateFlow(0)
+    private val _missingTime = MutableStateFlow("")
     private var timerJob: kotlinx.coroutines.Job? = null
 
     private val _generatorState = MutableStateFlow(GeneratorState())
-    val generatorState = _generatorState
+    val generatorState = _refresh
         .onStart {
             _generatorState.update {
                 it.copy(
@@ -44,14 +48,22 @@ class QRGeneratorViewModel @Inject constructor(
             }
             fetchQrSeed()
         }
-        .combine(
-            _refresh
-        ){ state, refresh ->
-            if(refresh >0 ){
+        .onEach {
+            if (_refresh.value >=0){
                 fetchQrSeed()
             }
-            state
-        }.stateIn(
+        }
+        .map {
+            _generatorState.value
+        }
+        .combine(
+            _missingTime
+        ){state, missingTime ->
+            state.copy(
+                remainingTime = missingTime
+            )
+        }
+        .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = GeneratorState()
@@ -73,6 +85,7 @@ class QRGeneratorViewModel @Inject constructor(
                 val remainingSeconds = ChronoUnit.SECONDS.between(currentInstant, expirationInstant)
                 
 
+                _missingTime.value= formatTime(remainingSeconds)
                 _generatorState.update {
                     it.copy(
                         remainingTime = formatTime(remainingSeconds),
@@ -126,6 +139,7 @@ class QRGeneratorViewModel @Inject constructor(
                 }
                 GeneratorIntent.Retry -> {
                     _generatorState.update { it.copy(isLoading = true) }
+                    _refresh.update { it + 1 }
                     fetchQrSeed()
                 }
             }

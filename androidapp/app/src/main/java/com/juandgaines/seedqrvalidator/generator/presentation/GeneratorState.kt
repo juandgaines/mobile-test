@@ -4,6 +4,6 @@ data class GeneratorState(
     val seed: String= "",
     val remainingTime: String = "",
     val hasExpired:Boolean =false,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: Int? = null,
 )
