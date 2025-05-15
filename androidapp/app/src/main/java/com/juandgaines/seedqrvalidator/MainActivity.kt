@@ -22,7 +22,7 @@ import com.juandgaines.seedqrvalidator.core.presentation.ui.theme.SeedQRValidato
 import com.juandgaines.seedqrvalidator.core.presentation.utils.toBitmap
 import com.juandgaines.seedqrvalidator.home.presentation.HomeScreenRoot
 import com.juandgaines.seedqrvalidator.home.presentation.HomeViewModel
-import com.juandgaines.seedqrvalidator.reader.presentation.QrGeneratorScreenRoot
+import com.juandgaines.seedqrvalidator.generator.presentation.QrGeneratorScreenRoot
 import com.juandgaines.seedqrvalidator.scanner.presentation.ScannerScreenRoot
 import dagger.hilt.android.AndroidEntryPoint
 import qrcode.QRCode
