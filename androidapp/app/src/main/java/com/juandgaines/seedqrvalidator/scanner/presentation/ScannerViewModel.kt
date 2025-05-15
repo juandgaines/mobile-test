@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -24,7 +25,16 @@ class ScannerViewModel @Inject constructor(
 
     private val _scannerState = MutableStateFlow(ScannerState())
 
-    val scannerState = _scannerState
+    val scannerState = _currentPreviewPhoto.combine(
+        _scannerState
+    ) { photo, state ->
+        state.copy(
+            photoToBeProcessed = photo,
+            permissionGranted = state.permissionGranted,
+            showCameraRationale = state.showCameraRationale,
+            isInPreviewMode = photo!=null
+        )
+    }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),

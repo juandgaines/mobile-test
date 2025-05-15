@@ -86,8 +86,8 @@ dependencies {
     ksp(libs.room.compiler)
 
     //camera
-    implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.video)
     implementation(libs.androidx.camera.lifecycle)
