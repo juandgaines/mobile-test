@@ -40,7 +40,6 @@ class ScannerViewModel @Inject constructor(
     fun onAction(intent:ScannerIntent){
         viewModelScope.launch {
             when(intent){
-                ScannerIntent.ProcessPhoto -> {}
                 is ScannerIntent.SubmitCameraPermissionInfo -> {
                     _scannerState.value = _scannerState.value.copy(
                         permissionGranted = intent.acceptedCameraPermission,
