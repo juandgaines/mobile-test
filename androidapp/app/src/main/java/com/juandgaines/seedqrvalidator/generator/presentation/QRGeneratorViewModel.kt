@@ -34,7 +34,7 @@ class QRGeneratorViewModel @Inject constructor(
     val eventsGenerator = _eventChannel.receiveAsFlow()
 
     private val _refresh = MutableStateFlow(0)
-    private val _missingTime = MutableStateFlow("")
+    private val _missingTime = MutableStateFlow(0L)
     private var timerJob: kotlinx.coroutines.Job? = null
 
     private val _generatorState = MutableStateFlow(GeneratorState())
@@ -59,7 +59,8 @@ class QRGeneratorViewModel @Inject constructor(
             _missingTime
         ){state, missingTime ->
             state.copy(
-                remainingTime = missingTime
+                remainingTime = formatTime(missingTime),
+                hasExpired = missingTime <= 0
             )
         }
         .stateIn(
@@ -84,13 +85,7 @@ class QRGeneratorViewModel @Inject constructor(
                 val remainingSeconds = ChronoUnit.SECONDS.between(currentInstant, expirationInstant)
                 
 
-                _missingTime.value= formatTime(remainingSeconds)
-                _generatorState.update {
-                    it.copy(
-                        remainingTime = formatTime(remainingSeconds),
-                        hasExpired = remainingSeconds <= 0
-                    )
-                }
+                _missingTime.value= remainingSeconds
                 if (remainingSeconds <= 0) {
                     break
                 }
