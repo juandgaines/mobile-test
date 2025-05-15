@@ -1,4 +1,4 @@
-package com.juandgaines.seedqrvalidator.reader.data
+package com.juandgaines.seedqrvalidator.generator.data
 
 import com.juandgaines.seedqrvalidator.core.data.network.SeedApi
 import com.juandgaines.seedqrvalidator.core.data.network.SeedDto
@@ -10,7 +10,7 @@ import com.juandgaines.seedqrvalidator.core.domain.utils.Result
 import com.juandgaines.seedqrvalidator.core.domain.utils.map
 import com.juandgaines.seedqrvalidator.core.domain.utils.onError
 import com.juandgaines.seedqrvalidator.core.domain.utils.onSuccess
-import com.juandgaines.seedqrvalidator.reader.domain.QrGeneratorRepository
+import com.juandgaines.seedqrvalidator.generator.domain.QrGeneratorRepository
 import javax.inject.Inject
 
 class QRGeneratorRepositoryImpl @Inject constructor(

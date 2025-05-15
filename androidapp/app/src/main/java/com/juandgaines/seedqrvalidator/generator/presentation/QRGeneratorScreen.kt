@@ -1,4 +1,4 @@
-package com.juandgaines.seedqrvalidator.reader.presentation
+package com.juandgaines.seedqrvalidator.generator.presentation
 
 import androidx.compose.runtime.Composable
 
