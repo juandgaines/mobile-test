@@ -1,5 +1,7 @@
 package com.juandgaines.seedqrvalidator.home.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -65,32 +67,39 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             Column (
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ){
 
-                if (state.isMenuVisible){
-                    FloatingActionButton(
-                        onClick = {
-                            onIntent(HomeIntent.GenerateQrIntent)
+                AnimatedVisibility(
+                    state.isMenuVisible
+                ){
+                    Column (
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ){
+                        FloatingActionButton(
+                            onClick = {
+                                onIntent(HomeIntent.GenerateQrIntent)
+                            }
+                        ) {
+                            Icon(
+                                imageVector =Icons.Default.QrCode,
+                                contentDescription = "Generate QR Code",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector =Icons.Default.QrCode,
-                            contentDescription = "Generate QR Code",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                    FloatingActionButton(
-                        onClick = {
-                            onIntent(HomeIntent.GenerateQrIntent)
+                        FloatingActionButton(
+                            onClick = {
+                                onIntent(HomeIntent.GenerateQrIntent)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.QrCodeScanner,
+                                contentDescription = "Scan QR Code",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.QrCodeScanner,
-                            contentDescription = "Scan QR Code",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
                     }
+
                 }
                 FloatingActionButton(
                     onClick = {
