@@ -29,6 +29,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -65,6 +68,12 @@ dependencies {
     ksp(libs.dagger.hilt.compiler)
 
     implementation(libs.kotlinx.serialization.json)
+
+    // Network
+    implementation(libs.retrofit.library)
+    implementation(libs.retrofit.kotlinx.serialization.converter)
+    implementation(libs.okhttp3.library)
+    implementation(libs.okhttp3.logging.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
