@@ -27,20 +27,10 @@ class ScannerViewModel @Inject constructor(
     private val _eventChannel = Channel<ScannerEvents>()
     val eventsScanner = _eventChannel.receiveAsFlow()
 
-    private val _currentPreviewPhoto = MutableStateFlow<ByteArray?>(null)
 
     private val _scannerState = MutableStateFlow(ScannerState())
 
-    val scannerState = _currentPreviewPhoto.combine(
-        _scannerState
-    ) { photo, state ->
-        state.copy(
-            photoToBeProcessed = photo,
-            permissionGranted = state.permissionGranted,
-            showCameraRationale = state.showCameraRationale,
-            isInPreviewMode = photo!=null
-        )
-    }
+    val scannerState = _scannerState
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -50,7 +40,6 @@ class ScannerViewModel @Inject constructor(
     fun onAction(intent:ScannerIntent){
         viewModelScope.launch {
             when(intent){
-                ScannerIntent.CancelPreview -> onCancelPicturePreview()
                 ScannerIntent.ProcessPhoto -> {}
                 is ScannerIntent.SubmitCameraPermissionInfo -> {
                     _scannerState.value = _scannerState.value.copy(
@@ -58,7 +47,6 @@ class ScannerViewModel @Inject constructor(
                         showCameraRationale = intent.showCameraRationale
                     )
                 }
-                is ScannerIntent.TakenPicture -> onPhotoForPreview(intent.data)
                 is ScannerIntent.BarcodeDetected -> {
                     scannerRepository.validateSeed(intent.value)
                         .onSuccess {
@@ -94,19 +82,15 @@ class ScannerViewModel @Inject constructor(
                 }
 
                 is ScannerIntent.ErrorScanning -> {
-                    //Todo: Error case
+                    _eventChannel.send(
+                        ScannerEvents.ShowMessage(
+                            messageRes = R.string.message_error
+                        )
+                    )
 
                 }
             }
         }
     }
 
-
-    private fun onCancelPicturePreview() {
-        _currentPreviewPhoto.value = null
-    }
-
-    private fun onPhotoForPreview(photoBytes: ByteArray) {
-        _currentPreviewPhoto.value = photoBytes
-    }
 }

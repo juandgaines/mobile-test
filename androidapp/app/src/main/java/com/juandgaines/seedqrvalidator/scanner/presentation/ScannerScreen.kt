@@ -102,13 +102,6 @@ fun ScannerScreen(
         ) {
 
             when{
-                state.isInPreviewMode && state.photoToBeProcessed != null->{
-                    PhotoPreviewScreen(
-                        photoBytes = state.photoToBeProcessed,
-                        onAction = onEvent
-
-                    )
-                }
                 state.permissionGranted ->{
                     CameraScreen(
                         onPhotoTaken = { imageProxy ->
