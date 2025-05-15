@@ -2,6 +2,11 @@ package com.juandgaines.seedqrvalidator.scanner.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.juandgaines.seedqrvalidator.R
+import com.juandgaines.seedqrvalidator.core.domain.utils.DataError
+import com.juandgaines.seedqrvalidator.core.domain.utils.onError
+import com.juandgaines.seedqrvalidator.core.domain.utils.onSuccess
+import com.juandgaines.seedqrvalidator.scanner.domain.ScannerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,11 +15,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ScannerViewModel @Inject constructor(
-
+    private val scannerRepository: ScannerRepository
 ): ViewModel(){
 
 
@@ -54,7 +60,37 @@ class ScannerViewModel @Inject constructor(
                 }
                 is ScannerIntent.TakenPicture -> onPhotoForPreview(intent.data)
                 is ScannerIntent.BarcodeDetected -> {
-                    //TODO: Verify is valid
+                    scannerRepository.validateSeed(intent.value)
+                        .onSuccess {
+                        _eventChannel.send(
+                            ScannerEvents.ShowMessage(
+                               messageRes = R.string.valid_seed
+                            )
+                        )
+                    }.onError { error->
+                        when(error){
+                            DataError.Network.REQUEST_TIMEOUT,
+                            DataError.Network.NO_INTERNET -> {
+                                ScannerEvents.ShowMessage(
+                                    messageRes = R.string.error_internet
+                                )
+                            }
+                            DataError.Network.NOT_FOUND -> {
+                                _eventChannel.send(
+                                    ScannerEvents.ShowMessage(
+                                        messageRes = R.string.invalid_seed
+                                    )
+                                )
+                            }
+                            else-> {
+                                _eventChannel.send(
+                                    ScannerEvents.ShowMessage(
+                                        messageRes = R.string.message_error
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
 
                 is ScannerIntent.ErrorScanning -> {

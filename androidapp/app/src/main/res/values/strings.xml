@@ -8,4 +8,6 @@
     <string name="grant_permissions">Grant</string>
     <string name="not_now">Not now</string>
     <string name="camera_permission_denied">Camera permission denied. Go to Settings to enable it.</string>
+    <string name="valid_seed">Qr with seed is valid.</string>
+    <string name="invalid_seed">This seed does not exist or has expired</string>
 </resources>
