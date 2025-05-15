@@ -18,11 +18,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.juandgaines.seedqrvalidator.core.presentation.navigation.Destinations
-import com.juandgaines.seedqrvalidator.core.presentation.utils.toBitmap
 import com.juandgaines.seedqrvalidator.core.presentation.ui.theme.SeedQRValidatorTheme
+import com.juandgaines.seedqrvalidator.core.presentation.utils.toBitmap
 import com.juandgaines.seedqrvalidator.home.presentation.HomeScreenRoot
 import com.juandgaines.seedqrvalidator.home.presentation.HomeViewModel
-import com.juandgaines.seedqrvalidator.reader.presentation.ReaderScreenRoot
+import com.juandgaines.seedqrvalidator.reader.presentation.QrGeneratorScreenRoot
 import com.juandgaines.seedqrvalidator.scanner.presentation.ScannerScreenRoot
 import dagger.hilt.android.AndroidEntryPoint
 import qrcode.QRCode
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable<Destinations.GeneratorQRNav> {
-                        ReaderScreenRoot()
+                        QrGeneratorScreenRoot()
                     }
 
                 }

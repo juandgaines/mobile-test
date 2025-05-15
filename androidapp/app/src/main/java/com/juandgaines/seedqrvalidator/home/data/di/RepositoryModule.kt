@@ -1,8 +1,8 @@
-package com.juandgaines.seedqrvalidator.core.data.home.di
+package com.juandgaines.seedqrvalidator.home.data.di
 
-import com.juandgaines.seedqrvalidator.core.data.home.HomeRepositoryImpl
+import com.juandgaines.seedqrvalidator.home.data.HomeRepositoryImpl
 import com.juandgaines.seedqrvalidator.core.data.network.SeedApi
-import com.juandgaines.seedqrvalidator.core.domain.HomeRepository
+import com.juandgaines.seedqrvalidator.home.domain.HomeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

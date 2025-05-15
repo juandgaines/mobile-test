@@ -1,9 +1,8 @@
-package com.juandgaines.seedqrvalidator.core.domain
+package com.juandgaines.seedqrvalidator.reader.domain
+import com.juandgaines.seedqrvalidator.core.domain.Seed
 import com.juandgaines.seedqrvalidator.core.domain.utils.DataError
 import com.juandgaines.seedqrvalidator.core.domain.utils.Result
-import kotlinx.coroutines.flow.Flow
 
-interface HomeRepository{
-    fun getScannedSeeds(): Flow<List<Seed>>
+interface QrGeneratorRepository{
     suspend fun getSeed():Result<Seed, DataError.Network>
 }
