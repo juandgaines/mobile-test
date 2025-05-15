@@ -19,7 +19,7 @@ class ScannerViewModel @Inject constructor(
 
 
     private val _eventChannel = Channel<ScannerEvents>()
-    val eventsHome = _eventChannel.receiveAsFlow()
+    val eventsScanner = _eventChannel.receiveAsFlow()
 
     private val _currentPreviewPhoto = MutableStateFlow<ByteArray?>(null)
 
@@ -53,6 +53,14 @@ class ScannerViewModel @Inject constructor(
                     )
                 }
                 is ScannerIntent.TakenPicture -> onPhotoForPreview(intent.data)
+                is ScannerIntent.BarcodeDetected -> {
+                    //TODO: Verify is valid
+                }
+
+                is ScannerIntent.ErrorScanning -> {
+                    //Todo: Error case
+
+                }
             }
         }
     }
