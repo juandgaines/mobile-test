@@ -8,5 +8,6 @@ data class SeedEntity(
     @PrimaryKey(autoGenerate = true)
     val id:Long? = null,
     val seed:String,
+    val type:Int,
     val expirationTime:String
 )
