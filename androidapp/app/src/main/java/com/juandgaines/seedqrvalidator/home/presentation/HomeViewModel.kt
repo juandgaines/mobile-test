@@ -2,6 +2,8 @@ package com.juandgaines.seedqrvalidator.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.juandgaines.seedqrvalidator.core.domain.HomeRepository
+import com.juandgaines.seedqrvalidator.core.domain.utils.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,9 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor() :ViewModel(){
+class HomeViewModel @Inject constructor(
+    private val homeRepository: HomeRepository
+) :ViewModel(){
 
     private val _eventChannel = Channel<HomeEvent>()
     val eventsHome = _eventChannel.receiveAsFlow()
@@ -22,7 +26,13 @@ class HomeViewModel @Inject constructor() :ViewModel(){
     private val _homeState = MutableStateFlow(HomeState())
     val homeState:StateFlow<HomeState> = _homeState
         .onStart {
-
+            homeRepository.getSeed().onSuccess {  success ->
+                _homeState.update {
+                    it.copy(
+                        seedList = it.seedList + success,
+                    )
+                }
+            }
         }
         .stateIn(
             scope = viewModelScope,
