@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.OptIn
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalGetImage::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -48,9 +51,6 @@ class MainActivity : ComponentActivity() {
                         val scannerViewModel = hiltViewModel<ScannerViewModel>()
                         ScannerScreenRoot(
                             scannerScannerViewModel = scannerViewModel,
-                            navigateToDestination = {destination ->
-                                navController.navigate(destination)
-                            },
                             navigateBack = {
                                 navController.navigateUp()
                             }

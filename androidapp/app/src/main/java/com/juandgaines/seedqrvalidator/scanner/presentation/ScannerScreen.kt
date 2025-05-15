@@ -4,6 +4,7 @@ package com.juandgaines.seedqrvalidator.scanner.presentation
 
 import android.Manifest
 import android.content.Context
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -33,17 +34,42 @@ import com.juandgaines.seedqrvalidator.R
 import com.juandgaines.seedqrvalidator.core.presentation.navigation.Destinations
 import com.juandgaines.seedqrvalidator.core.presentation.utils.hasCameraPermission
 import com.juandgaines.seedqrvalidator.core.presentation.utils.shouldShowCameraPermissionRationale
+import kotlinx.coroutines.delay
 
 @ExperimentalGetImage
 @Composable
 fun ScannerScreenRoot(
     scannerScannerViewModel: ScannerViewModel,
-    navigateToDestination: (Destinations) -> Unit,
     navigateBack: () -> Unit,
 ) {
 
 
     val scannerState by scannerScannerViewModel.scannerState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    LaunchedEffect(
+        true
+    ) {
+        scannerScannerViewModel.eventsScanner.collect{ events->
+            when(events){
+                is ScannerEvents.ShowMessageSuccess->{
+                    Toast.makeText(
+                        context,
+                        events.messageRes,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    navigateBack()
+                }
+                is ScannerEvents.ShowMessageError->{
+                    Toast.makeText(
+                        context,
+                        events.messageRes,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+        }
+    }
 
     ScannerScreen(
         state = scannerState,

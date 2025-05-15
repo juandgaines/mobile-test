@@ -11,11 +11,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,7 +48,7 @@ class ScannerViewModel @Inject constructor(
                     scannerRepository.validateSeed(intent.value)
                         .onSuccess {
                         _eventChannel.send(
-                            ScannerEvents.ShowMessage(
+                            ScannerEvents.ShowMessageSuccess(
                                messageRes = R.string.valid_seed
                             )
                         )
@@ -58,20 +56,20 @@ class ScannerViewModel @Inject constructor(
                         when(error){
                             DataError.Network.REQUEST_TIMEOUT,
                             DataError.Network.NO_INTERNET -> {
-                                ScannerEvents.ShowMessage(
+                                ScannerEvents.ShowMessageError(
                                     messageRes = R.string.error_internet
                                 )
                             }
                             DataError.Network.NOT_FOUND -> {
                                 _eventChannel.send(
-                                    ScannerEvents.ShowMessage(
+                                    ScannerEvents.ShowMessageError(
                                         messageRes = R.string.invalid_seed
                                     )
                                 )
                             }
                             else-> {
                                 _eventChannel.send(
-                                    ScannerEvents.ShowMessage(
+                                    ScannerEvents.ShowMessageError(
                                         messageRes = R.string.message_error
                                     )
                                 )
@@ -82,7 +80,7 @@ class ScannerViewModel @Inject constructor(
 
                 is ScannerIntent.ErrorScanning -> {
                     _eventChannel.send(
-                        ScannerEvents.ShowMessage(
+                        ScannerEvents.ShowMessageError(
                             messageRes = R.string.message_error
                         )
                     )
