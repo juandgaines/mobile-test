@@ -88,7 +88,12 @@ fun HomeScreen(
                 }
                 FloatingActionButton(
                     onClick = {
-                        onIntent(HomeIntent.GenerateQrIntent)
+                        val intent = if (state.isMenuVisible) {
+                            HomeIntent.CollapseFabMenu
+                        } else {
+                            HomeIntent.ExpandFabMenu
+                        }
+                        onIntent(intent)
                     }
                 ) {
                     Icon(
