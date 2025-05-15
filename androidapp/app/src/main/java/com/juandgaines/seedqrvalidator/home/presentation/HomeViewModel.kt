@@ -11,9 +11,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel :ViewModel(){
+class HomeViewModel @Inject constructor() :ViewModel(){
 
     private val _eventChannel = Channel<HomeEvent>()
     val eventsHome = _eventChannel.receiveAsFlow()
