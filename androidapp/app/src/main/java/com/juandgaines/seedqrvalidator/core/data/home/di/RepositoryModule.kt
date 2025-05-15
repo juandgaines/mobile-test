@@ -16,7 +16,7 @@ class RepositoryModule {
         seedApi: SeedApi
     ): HomeRepository {
         return HomeRepositoryImpl(
-        seedApi = seedApi
+            seedApi = seedApi
         )
     }
 }

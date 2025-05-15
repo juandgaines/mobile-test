@@ -37,6 +37,7 @@ inline fun <reified T> responseToResult(response: Response<T>): Result<T, Networ
         in 200..299 -> {
             Result.Success(response.body() as T)
         }
+        404 -> Result.Error(Network.NOT_FOUND)
         in 500..599 -> Result.Error(Network.SERVER_ERROR)
         else -> Result.Error(Network.UNKNOWN)
     }
