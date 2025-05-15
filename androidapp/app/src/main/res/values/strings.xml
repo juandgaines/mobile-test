@@ -3,4 +3,8 @@
     <string name="message_error">An error has occurred. Try again.</string>
     <string name="error_internet">Internet connection unstable. Try again.\n</string>
     <string name="retry">Retry</string>
+    <string name="camera_permission_required">Camera permission required</string>
+    <string name="camera_rationale">In order to capture QR codes, camera permission is needed.</string>
+    <string name="grant_permissions">Grant</string>
+    <string name="not_now">Not now</string>
 </resources>
