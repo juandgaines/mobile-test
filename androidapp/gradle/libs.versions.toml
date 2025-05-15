@@ -25,6 +25,7 @@ material = "1.12.0"
 coilCompose = "2.6.0"
 barcode-scanner= "17.3.0"
 barcode-generator= "4.4.1"
+cameraXVersion = "1.4.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -75,6 +76,13 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 #Barcode gen and scanner
 barcode-scanner = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "barcode-scanner" }
 barcode-generator = { group = "io.github.g0dkar", name = "qrcode-kotlin", version.ref = "barcode-generator" }
+#camera
+androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraXVersion" }
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "cameraXVersion" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraXVersion" }
+androidx-camera-video = { group = "androidx.camera", name = "camera-video", version.ref = "cameraXVersion" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraXVersion" }
+androidx-camera-extensions = { group = "androidx.camera", name = "camera-extensions", version.ref = "cameraXVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
