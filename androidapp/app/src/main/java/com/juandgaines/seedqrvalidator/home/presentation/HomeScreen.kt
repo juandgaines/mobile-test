@@ -4,6 +4,7 @@ package com.juandgaines.seedqrvalidator.home.presentation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,8 +12,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -29,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -95,7 +99,7 @@ fun HomeScreen(
                             Icon(
                                 imageVector =Icons.Default.QrCode,
                                 contentDescription = "Generate QR Code",
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
                         FloatingActionButton(
@@ -106,7 +110,7 @@ fun HomeScreen(
                             Icon(
                                 imageVector = Icons.Default.QrCodeScanner,
                                 contentDescription = "Scan QR Code",
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
                     }
@@ -126,7 +130,7 @@ fun HomeScreen(
                         imageVector = if (state.isMenuVisible) Icons.Default.Close
                         else Icons.Default.Add,
                         contentDescription = "Expand/Close Menu",
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
@@ -137,7 +141,8 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ){
             items(
                 items = state.seedList,
@@ -145,6 +150,13 @@ fun HomeScreen(
             ){
                 Column(
                     modifier = Modifier.fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(
+                                16.dp
+                            )
+                        )
                         .clickable {
                             onIntent(HomeIntent.OpenExistingQrIntent(it.seed))
                         }
@@ -154,14 +166,16 @@ fun HomeScreen(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 18.sp,
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
                     )
                     Text(
                         text = it.type.name,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 14.sp,
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
                     )
                 }
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -92,14 +93,14 @@ fun QrGeneratorScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
-
+            val colorQr = MaterialTheme.colorScheme.onBackground
             when{
                 state.seed.isNotEmpty()->{
                     val bitmap by remember {
                         derivedStateOf {
                             QRCode.ofSquares()
                                 .withColor(
-                                    Colors.GREY,
+                                    colorQr.toArgb()
                                 ) // Default is Colors.BLACK
                                 .withSize(10) // Default is 25
                                 .build(state.seed)
@@ -119,14 +120,14 @@ fun QrGeneratorScreen(
 
                     Text(
                         text = if (!state.hasExpired)"Expires in: ${state.remainingTime}" else "Seed Expired",
-                        color = if(!state.hasExpired)MaterialTheme.colorScheme.primary else Color.Red
+                        color = if(!state.hasExpired)MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.error
                     )
                 }
                 state.error != null ->{
 
                     Text(
                         text = stringResource(state.error),
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.error
                     )
                     Button(
                         onClick = {
