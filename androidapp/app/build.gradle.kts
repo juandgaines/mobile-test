@@ -93,6 +93,25 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.extensions)
 
+    // Test dependencies
+    testImplementation(libs.junit)
+    testImplementation(libs.truth)
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+
+    // Android Test dependencies
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.mockk)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+
+    androidTestImplementation(libs.androidx.navigation.testing)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
