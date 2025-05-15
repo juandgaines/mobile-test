@@ -98,7 +98,9 @@ fun QrGeneratorScreen(
                     val bitmap by remember {
                         derivedStateOf {
                             QRCode.ofSquares()
-                                .withColor(Colors.DEEP_SKY_BLUE) // Default is Colors.BLACK
+                                .withColor(
+                                    Colors.GREY,
+                                ) // Default is Colors.BLACK
                                 .withSize(10) // Default is 25
                                 .build(state.seed)
                                 .renderToBytes().toBitmap()

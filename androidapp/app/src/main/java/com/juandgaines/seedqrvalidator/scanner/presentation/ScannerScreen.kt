@@ -1,15 +1,15 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.juandgaines.seedqrvalidator.scanner.presentation
 
 import android.Manifest
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Matrix
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.ExperimentalGetImage
+import androidx.camera.core.ImageProxy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,12 +25,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.common.InputImage
 import com.juandgaines.seedqrvalidator.R
 import com.juandgaines.seedqrvalidator.core.presentation.navigation.Destinations
 import com.juandgaines.seedqrvalidator.core.presentation.utils.hasCameraPermission
 import com.juandgaines.seedqrvalidator.core.presentation.utils.shouldShowCameraPermissionRationale
-import com.juandgaines.seedqrvalidator.core.presentation.utils.toByteArray
 
+@ExperimentalGetImage
 @Composable
 fun ScannerScreenRoot(
     scannerScannerViewModel: ScannerViewModel,
@@ -47,6 +51,7 @@ fun ScannerScreenRoot(
     )
 }
 
+@ExperimentalGetImage
 @Composable
 fun ScannerScreen(
     state:ScannerState,
@@ -107,19 +112,7 @@ fun ScannerScreen(
                 state.permissionGranted ->{
                     CameraScreen(
                         onPhotoTaken = { imageProxy ->
-                            val matrix = Matrix().apply {
-                                postRotate(
-                                    imageProxy.imageInfo.rotationDegrees.toFloat()
-                                )
-                            }
-                            val rotatedBitmap = imageProxy.toBitmap().let {
-                                Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, true)
-                            }
-                            onEvent(
-                                ScannerIntent.TakenPicture(
-                                    rotatedBitmap.toByteArray()
-                                )
-                            )
+                            scanForQrCode(imageProxy, onEvent)
                         }
                     )
                 }
@@ -146,6 +139,57 @@ fun ScannerScreen(
                 }
             )
         }
+    }
+}
+
+
+@androidx.annotation.OptIn(ExperimentalGetImage::class)
+private fun scanForQrCode(
+    imageProxy: ImageProxy,
+    onEvent: (ScannerIntent) -> Unit
+) {
+    val options = BarcodeScannerOptions.Builder()
+        .setBarcodeFormats(
+            Barcode.FORMAT_QR_CODE,
+            Barcode.FORMAT_AZTEC
+        )
+        .build()
+
+    val scanner = BarcodeScanning.getClient(options)
+
+    try {
+        val mediaImage = imageProxy.image
+        if (mediaImage != null) {
+            val image = InputImage.fromMediaImage(
+                mediaImage,
+                imageProxy.imageInfo.rotationDegrees
+            )
+            scanner.process(image)
+                .addOnSuccessListener { barcodes ->
+                    val barcode = barcodes.firstOrNull()
+                    barcode?.rawValue?.let {
+                        onEvent(
+                            ScannerIntent.BarcodeDetected(it)
+                        )
+                    }
+                }
+                .addOnFailureListener { e ->
+                    onEvent(
+                        ScannerIntent.ErrorScanning
+                    )
+                }
+                .addOnCompleteListener {
+                    imageProxy.close()
+                }
+        } else {
+            imageProxy.close()
+        }
+    } catch (e: Exception) {
+        onEvent(
+            ScannerIntent.ErrorScanning
+        )
+
+        imageProxy.close()
     }
 }
 

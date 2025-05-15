@@ -21,6 +21,9 @@ sealed interface ScannerIntent {
         val showCameraRationale: Boolean
     ) : ScannerIntent
 
+    data class BarcodeDetected(val value: String) : ScannerIntent
+    data object ErrorScanning : ScannerIntent
+
     data object ProcessPhoto: ScannerIntent
     data object CancelPreview: ScannerIntent
 }
