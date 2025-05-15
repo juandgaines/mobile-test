@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.juandgaines.seedqrvalidator.core.presentation.navigation.Destinations
 import com.juandgaines.seedqrvalidator.core.presentation.ui.theme.SeedQRValidatorTheme
 import com.juandgaines.seedqrvalidator.core.presentation.utils.toBitmap
+import com.juandgaines.seedqrvalidator.generator.presentation.QRGeneratorViewModel
 import com.juandgaines.seedqrvalidator.home.presentation.HomeScreenRoot
 import com.juandgaines.seedqrvalidator.home.presentation.HomeViewModel
 import com.juandgaines.seedqrvalidator.generator.presentation.QrGeneratorScreenRoot
@@ -57,7 +58,13 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable<Destinations.GeneratorQRNav> {
-                        QrGeneratorScreenRoot()
+                        val qrGeneratorViewmodel = hiltViewModel<QRGeneratorViewModel> ()
+                        QrGeneratorScreenRoot(
+                            qrGeneratorViewModel = qrGeneratorViewmodel,
+                            navigateBack = {
+                                navController.navigateUp()
+                            }
+                        )
                     }
 
                 }
@@ -68,24 +75,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    val helloWorld = QRCode.ofSquares()
-        .withColor(Colors.DEEP_SKY_BLUE) // Default is Colors.BLACK
-        .withSize(10) // Default is 25
-        .build("49423161e3844d42991763bbae6dc1f6")
 
-    val byteArray = helloWorld.renderToBytes().toBitmap()
-
-    Image(
-        bitmap = byteArray.asImageBitmap(),
-        contentDescription = null,
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxSize()
-    )
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true)
