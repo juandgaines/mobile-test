@@ -17,6 +17,7 @@ import com.juandgaines.seedqrvalidator.generator.presentation.QrGeneratorScreenR
 import com.juandgaines.seedqrvalidator.home.presentation.HomeScreenRoot
 import com.juandgaines.seedqrvalidator.home.presentation.HomeViewModel
 import com.juandgaines.seedqrvalidator.scanner.presentation.ScannerScreenRoot
+import com.juandgaines.seedqrvalidator.scanner.presentation.ScannerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -44,7 +45,16 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable<Destinations.ScannerNav> {
-                        ScannerScreenRoot()
+                        val scannerViewModel = hiltViewModel<ScannerViewModel>()
+                        ScannerScreenRoot(
+                            scannerScannerViewModel = scannerViewModel,
+                            navigateToDestination = {destination ->
+                                navController.navigate(destination)
+                            },
+                            navigateBack = {
+                                navController.navigateUp()
+                            }
+                        )
                     }
 
                     composable<Destinations.GeneratorQRNav> {

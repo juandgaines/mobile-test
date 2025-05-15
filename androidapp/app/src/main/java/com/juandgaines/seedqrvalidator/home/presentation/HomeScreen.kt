@@ -100,7 +100,7 @@ fun HomeScreen(
                         }
                         FloatingActionButton(
                             onClick = {
-                                onIntent(HomeIntent.GenerateQrIntent)
+                                onIntent(HomeIntent.ScanQrIntent)
                             }
                         ) {
                             Icon(

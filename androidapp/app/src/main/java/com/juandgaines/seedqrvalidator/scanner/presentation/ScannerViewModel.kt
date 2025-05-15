@@ -35,8 +35,13 @@ class ScannerViewModel @Inject constructor(
         viewModelScope.launch {
             when(intent){
                 ScannerIntent.CancelPreview -> onCancelPicturePreview()
-                ScannerIntent.ProcessPhoto -> TODO()
-                is ScannerIntent.SubmitCameraPermissionInfo -> TODO()
+                ScannerIntent.ProcessPhoto -> {}
+                is ScannerIntent.SubmitCameraPermissionInfo -> {
+                    _scannerState.value = _scannerState.value.copy(
+                        permissionGranted = intent.acceptedCameraPermission,
+                        showCameraRationale = intent.showCameraRationale
+                    )
+                }
                 is ScannerIntent.TakenPicture -> onPhotoForPreview(intent.data)
             }
         }
