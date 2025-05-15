@@ -13,5 +13,5 @@ interface SeedApi {
     suspend fun validateSeed(
         @Path("seed")
         seed: String
-    ): Response<Unit>
+    ): Response<Unit?>
 }

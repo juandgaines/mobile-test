@@ -10,7 +10,7 @@ import javax.inject.Inject
 class ScannerRepositoryImpl @Inject constructor(
     private val seedApi: SeedApi
 ) : ScannerRepository {
-    override suspend fun validateSeed(seed: String): Result<Unit, DataError.Network> = safeCall {
+    override suspend fun validateSeed(seed: String): Result<Unit?, DataError.Network> = safeCall {
         seedApi.validateSeed(seed)
     }
 }
