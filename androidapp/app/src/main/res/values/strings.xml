@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Seed QR Validator</string>
+    <string name="message_error">An error has occurred. Try again.</string>
+    <string name="error_internet">Internet connection unstable. Try again.\n</string>
 </resources>

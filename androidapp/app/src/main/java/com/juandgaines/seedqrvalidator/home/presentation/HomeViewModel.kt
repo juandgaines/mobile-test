@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,28 +33,31 @@ class HomeViewModel @Inject constructor(
         )
 
     fun onIntent(intent: HomeIntent){
-        when(intent){
-            HomeIntent.GenerateQrIntent -> {
-                _eventChannel.trySend(HomeEvent.NavigateToQr)
-            }
-            HomeIntent.ScanQrIntent -> {
-                _eventChannel.trySend(HomeEvent.NavigateToScan)
-            }
-
-            HomeIntent.CollapseFabMenu -> {
-                _homeState.update {
-                    it.copy(
-                        isMenuVisible = false
-                    )
+        viewModelScope.launch {
+            when(intent){
+                HomeIntent.GenerateQrIntent -> {
+                    _eventChannel.trySend(HomeEvent.NavigateToQr)
                 }
-            }
-            HomeIntent.ExpandFabMenu -> {
-                _homeState.update {
-                    it.copy(
-                        isMenuVisible = true
-                    )
+                HomeIntent.ScanQrIntent -> {
+                    _eventChannel.trySend(HomeEvent.NavigateToScan)
+                }
+
+                HomeIntent.CollapseFabMenu -> {
+                    _homeState.update {
+                        it.copy(
+                            isMenuVisible = false
+                        )
+                    }
+                }
+                HomeIntent.ExpandFabMenu -> {
+                    _homeState.update {
+                        it.copy(
+                            isMenuVisible = true
+                        )
+                    }
                 }
             }
         }
+
     }
 }
