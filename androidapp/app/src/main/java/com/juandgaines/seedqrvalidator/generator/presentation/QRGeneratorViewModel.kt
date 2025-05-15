@@ -48,7 +48,7 @@ class QRGeneratorViewModel @Inject constructor(
             fetchQrSeed()
         }
         .onEach {
-            if (_refresh.value >=0){
+            if (_refresh.value >0){
                 fetchQrSeed()
             }
         }

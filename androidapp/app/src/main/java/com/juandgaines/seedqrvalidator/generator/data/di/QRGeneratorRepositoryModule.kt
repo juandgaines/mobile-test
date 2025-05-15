@@ -1,5 +1,6 @@
 package com.juandgaines.seedqrvalidator.generator.data.di
 
+import com.juandgaines.seedqrvalidator.core.data.database.SeedDao
 import com.juandgaines.seedqrvalidator.core.data.network.SeedApi
 import com.juandgaines.seedqrvalidator.generator.data.QRGeneratorRepositoryImpl
 import com.juandgaines.seedqrvalidator.generator.domain.QrGeneratorRepository
@@ -13,9 +14,11 @@ import dagger.hilt.components.SingletonComponent
 class QRGeneratorRepositoryModule {
     @Provides
     fun provideHomeRepository(
-        seedApi: SeedApi
+        seedApi: SeedApi,
+        seedDao: SeedDao
     ): QrGeneratorRepository {
         return QRGeneratorRepositoryImpl(
+            seedDao = seedDao,
             seedApi = seedApi
         )
     }

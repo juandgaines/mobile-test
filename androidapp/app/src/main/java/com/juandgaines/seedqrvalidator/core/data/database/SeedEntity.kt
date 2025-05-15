@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "seeds")
 data class SeedEntity(
     @PrimaryKey(autoGenerate = true)
-    val id:Long,
+    val id:Long? = null,
     val seed:String,
     val expirationTime:String
 )

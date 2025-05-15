@@ -8,6 +8,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -22,15 +24,26 @@ class HomeViewModel @Inject constructor(
     private val _eventChannel = Channel<HomeEvent>()
     val eventsHome = _eventChannel.receiveAsFlow()
 
-    private val _refreshNewSeed = MutableStateFlow(0)
-
     private val _homeState = MutableStateFlow(HomeState())
-    val homeState:StateFlow<HomeState> = _homeState
+    val homeState:StateFlow<HomeState> = homeRepository.getScannedSeeds()
+        .map { listSeeds->
+            _homeState.update {
+                it.copy(
+                    seedList = listSeeds
+                )
+            }
+            _homeState.value
+        }
+        .combine(_homeState){ previousHS, homeState ->
+            homeState.copy(
+                seedList = previousHS.seedList
+            )
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = HomeState()
-        )
+    )
 
     fun onIntent(intent: HomeIntent){
         viewModelScope.launch {
