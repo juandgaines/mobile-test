@@ -7,13 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +21,7 @@ import com.juandgaines.seedqrvalidator.core.presentation.navigation.Destinations
 import com.juandgaines.seedqrvalidator.core.presentation.utils.toBitmap
 import com.juandgaines.seedqrvalidator.core.presentation.ui.theme.SeedQRValidatorTheme
 import com.juandgaines.seedqrvalidator.home.presentation.HomeScreenRoot
+import com.juandgaines.seedqrvalidator.home.presentation.HomeViewModel
 import com.juandgaines.seedqrvalidator.reader.presentation.ReaderScreenRoot
 import com.juandgaines.seedqrvalidator.scanner.presentation.ScannerScreenRoot
 import qrcode.QRCode
@@ -32,27 +33,31 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SeedQRValidatorTheme {
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = Destinations.HomeNav,
+                    modifier = Modifier.fillMaxSize(),
+                ){
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val navController = rememberNavController()
-                    NavHost(
-                        navController = navController,
-                        startDestination = Destinations.HomeNav,
-                        modifier = Modifier.padding(innerPadding),
-                    ){
-                        composable<Destinations.HomeNav> {
-                            HomeScreenRoot()
-                        }
-
-                        composable<Destinations.ScannerNav> {
-                            ScannerScreenRoot()
-                        }
-
-                        composable<Destinations.ReaderNav> {
-                            ReaderScreenRoot()
-                        }
-
+                    composable<Destinations.HomeNav> {
+                        val homeViewmodel = hiltViewModel<HomeViewModel>()
+                        HomeScreenRoot(
+                            homeViewModel = homeViewmodel,
+                            navigateToDestination = { destination ->
+                                navController.navigate(destination)
+                            }
+                        )
                     }
+
+                    composable<Destinations.ScannerNav> {
+                        ScannerScreenRoot()
+                    }
+
+                    composable<Destinations.GeneratorQRNav> {
+                        ReaderScreenRoot()
+                    }
+
                 }
             }
         }

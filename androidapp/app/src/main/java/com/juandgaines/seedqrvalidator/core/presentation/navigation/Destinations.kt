@@ -5,7 +5,7 @@ sealed interface Destinations {
     data object HomeNav : Destinations
 
     @kotlinx.serialization.Serializable
-    data object ReaderNav : Destinations
+    data object GeneratorQRNav : Destinations
 
     @kotlinx.serialization.Serializable
     data object ScannerNav : Destinations
