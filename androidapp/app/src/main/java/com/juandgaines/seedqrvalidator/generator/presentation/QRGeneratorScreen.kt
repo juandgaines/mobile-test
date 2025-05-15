@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.juandgaines.seedqrvalidator.R
 import com.juandgaines.seedqrvalidator.core.presentation.utils.toBitmap
 import qrcode.QRCode
