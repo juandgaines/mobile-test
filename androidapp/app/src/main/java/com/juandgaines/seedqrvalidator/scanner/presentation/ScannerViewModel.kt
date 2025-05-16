@@ -8,7 +8,9 @@ import com.juandgaines.seedqrvalidator.core.domain.utils.onError
 import com.juandgaines.seedqrvalidator.core.domain.utils.onSuccess
 import com.juandgaines.seedqrvalidator.scanner.domain.ScannerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -27,6 +29,8 @@ class ScannerViewModel @Inject constructor(
 
 
     private val _scannerState = MutableStateFlow(ScannerState())
+    private var latestScannedValue:String = ""
+    private var job:Job? = null
 
     val scannerState = _scannerState
         .stateIn(
@@ -45,6 +49,15 @@ class ScannerViewModel @Inject constructor(
                     )
                 }
                 is ScannerIntent.BarcodeDetected -> {
+                    if (intent.value == latestScannedValue) {
+                        job?.cancel()
+                        job = viewModelScope.launch {
+                            delay(3000)
+                            latestScannedValue = ""
+                        }
+                        return@launch
+                    }
+                    latestScannedValue = intent.value
                     scannerRepository.validateSeed(intent.value)
                         .onSuccess {
                         _eventChannel.send(

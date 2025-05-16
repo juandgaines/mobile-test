@@ -6,29 +6,39 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture.OnImageCapturedCallback
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cameraswitch
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 
 @Composable
 fun CameraScreen(
-    onPhotoTaken: (ImageProxy) -> Unit
+    onEvent: (ScannerIntent) -> Unit,
 ) {
     val localContext = LocalContext.current
+
+    val cameraProviderFuture = remember {
+        ProcessCameraProvider.getInstance(localContext)
+    }
 
     val controller = remember {
         LifecycleCameraController(localContext).apply {
@@ -42,63 +52,21 @@ fun CameraScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         CameraPreview(
-            controller = controller,
-            modifier = Modifier.fillMaxSize()
+            cameraProviderFuture =cameraProviderFuture,
+            modifier = Modifier.fillMaxSize(),
+            onEvent = onEvent
         )
 
-        IconButton(
-            onClick = {
-                controller.cameraSelector = if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                    CameraSelector.DEFAULT_FRONT_CAMERA
-                } else {
-                    CameraSelector.DEFAULT_BACK_CAMERA
-                }
-            },
-            modifier = Modifier.offset(16.dp, 36.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Cameraswitch,
-                contentDescription = "Switch camera"
-            )
-        }
-
-        IconButton(
-            onClick = {
-                takePhoto(
-                    context = localContext,
-                    controller = controller,
-                    onPhotoTaken = onPhotoTaken
+        Box (
+            modifier = Modifier.align(Alignment.Center)
+                .background(
+                    color = Color.Transparent
                 )
-            },
-            modifier = Modifier.align(
-                alignment = Alignment.BottomCenter
-            )
-        ) {
-            Icon(
-                imageVector = Icons.Filled.PhotoCamera,
-                contentDescription = "Take photo"
-            )
-        }
+                .size(300.dp)
+                .border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.primaryContainer
+                )
+        )
     }
-}
-private fun takePhoto(
-    context: Context,
-    controller: LifecycleCameraController,
-    onPhotoTaken: (ImageProxy) -> Unit
-) {
-    controller.takePicture(
-        ContextCompat.getMainExecutor(context),
-        object : OnImageCapturedCallback() {
-            override fun onCaptureSuccess(image: ImageProxy) {
-                super.onCaptureSuccess(image)
-                onPhotoTaken(image)
-                image.close()
-            }
-
-            override fun onError(exception: ImageCaptureException) {
-                super.onError(exception)
-                Log.e("CameraScreen", "Error taking picture", exception)
-            }
-        }
-    )
 }
