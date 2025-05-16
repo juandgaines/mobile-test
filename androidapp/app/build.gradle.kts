@@ -24,6 +24,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "BASE_URL", "\"https://seed-server-1-2a97f3a59738.herokuapp.com\"")
     }
 
     buildTypes {
@@ -35,7 +37,7 @@ android {
             )
         }
         debug {
-            
+            buildConfigField("String", "BASE_URL", "\"https://seed-server-1-2a97f3a59738.herokuapp.com\"")
         }
     }
     compileOptions {
@@ -47,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

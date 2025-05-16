@@ -1,6 +1,6 @@
 package com.juandgaines.seedqrvalidator.core.data.network.di
 
-import com.google.firebase.components.BuildConfig
+import com.juandgaines.seedqrvalidator.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,10 +26,10 @@ class RetrofitModule {
             ignoreUnknownKeys = true
         }
         return Retrofit.Builder()
-            .baseUrl("https://seed-server-1-2a97f3a59738.herokuapp.com")
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(
-                json.asConverterFactory( "application/json; charset=UTF8".toMediaType())
+                json.asConverterFactory("application/json; charset=UTF8".toMediaType())
             )
             .build()
     }
@@ -38,7 +38,11 @@ class RetrofitModule {
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
-            level =HttpLoggingInterceptor.Level.BODY
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         }
     }
 
@@ -48,9 +52,7 @@ class RetrofitModule {
         loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
-        builder
-
-            .addInterceptor(loggingInterceptor)
+        builder.addInterceptor(loggingInterceptor)
         return builder.build()
     }
 }
