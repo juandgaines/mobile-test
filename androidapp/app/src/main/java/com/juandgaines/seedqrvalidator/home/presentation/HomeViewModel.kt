@@ -51,12 +51,27 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             when(intent){
                 HomeIntent.GenerateQrIntent -> {
+                    _homeState.update {
+                        it.copy(
+                            isMenuVisible = false
+                        )
+                    }
                     _eventChannel.trySend(HomeEvent.NavigateToQr(null))
                 }
                 is HomeIntent.OpenExistingQrIntent -> {
+                    _homeState.update {
+                        it.copy(
+                            isMenuVisible = false
+                        )
+                    }
                     _eventChannel.trySend(HomeEvent.NavigateToQr(seed = intent.seed))
                 }
                 HomeIntent.ScanQrIntent -> {
+                    _homeState.update {
+                        it.copy(
+                            isMenuVisible = false
+                        )
+                    }
                     _eventChannel.trySend(HomeEvent.NavigateToScan)
                 }
 
