@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.dagger.hilt.navigation.compose)
     implementation(libs.dagger.hilt)
+    implementation(libs.androidx.camera.mlkit.vision)
     ksp(libs.dagger.hilt.compiler)
 
     implementation(libs.kotlinx.serialization.json)

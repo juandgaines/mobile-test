@@ -133,7 +133,7 @@ fun ScannerScreen(
             when{
                 state.permissionGranted ->{
                     CameraScreen(
-                        onEvent = onEvent,
+                        onEvent = onEvent
                     )
                 }
                 else->{
@@ -159,6 +159,57 @@ fun ScannerScreen(
                 }
             )
         }
+    }
+}
+
+
+@androidx.annotation.OptIn(ExperimentalGetImage::class)
+private fun scanForQrCode(
+    imageProxy: ImageProxy,
+    onEvent: (ScannerIntent) -> Unit
+) {
+    val options = BarcodeScannerOptions.Builder()
+        .setBarcodeFormats(
+            Barcode.FORMAT_QR_CODE,
+            Barcode.FORMAT_AZTEC
+        )
+        .build()
+
+    val scanner = BarcodeScanning.getClient(options)
+
+    try {
+        val mediaImage = imageProxy.image
+        if (mediaImage != null) {
+            val image = InputImage.fromMediaImage(
+                mediaImage,
+                imageProxy.imageInfo.rotationDegrees
+            )
+            scanner.process(image)
+                .addOnSuccessListener { barcodes ->
+                    val barcode = barcodes.firstOrNull()
+                    barcode?.rawValue?.let {
+                        onEvent(
+                            ScannerIntent.BarcodeDetected(it)
+                        )
+                    }
+                }
+                .addOnFailureListener { e ->
+                    onEvent(
+                        ScannerIntent.ErrorScanning
+                    )
+                }
+                .addOnCompleteListener {
+                    imageProxy.close()
+                }
+        } else {
+            imageProxy.close()
+        }
+    } catch (e: Exception) {
+        onEvent(
+            ScannerIntent.ErrorScanning
+        )
+
+        imageProxy.close()
     }
 }
 

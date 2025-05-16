@@ -36,19 +36,18 @@ fun CameraScreen(
 ) {
     val localContext = LocalContext.current
 
-    val cameraProviderFuture = remember {
-        ProcessCameraProvider.getInstance(localContext)
+    val controller = remember {
+        LifecycleCameraController(localContext)
     }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         CameraPreview(
-            cameraProviderFuture =cameraProviderFuture,
+            controller = controller,
             modifier = Modifier.fillMaxSize(),
             onEvent = onEvent
         )
-
         Box (
             modifier = Modifier.align(Alignment.Center)
                 .background(
