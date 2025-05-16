@@ -40,14 +40,6 @@ fun CameraScreen(
         ProcessCameraProvider.getInstance(localContext)
     }
 
-    val controller = remember {
-        LifecycleCameraController(localContext).apply {
-            setEnabledUseCases(
-                CameraController.IMAGE_CAPTURE
-            )
-        }
-    }
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
